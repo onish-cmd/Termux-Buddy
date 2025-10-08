@@ -14,19 +14,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.tooling.preview.Preview
+import com.onish.termuxbuddy.ui.theme.TermuxBuddyTheme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            val darkTheme = isSystemInDarkTheme()
-            val colorScheme = if (darkTheme) {
-                dynamicDarkColorScheme(this)
-            } else {
-                dynamicLightColorScheme(this)
-            }
-
-            MaterialTheme(colorScheme = colorScheme) {
+            // ✅ Use your Compose-only theme wrapper
+            TermuxBuddyTheme {
                 MainScreen()
             }
         }
@@ -171,7 +166,10 @@ fun MainScreen() {
 @Preview(showBackground = true)
 @Composable
 fun PreviewMainScreen() {
-    MaterialTheme {
+    TermuxBuddyTheme {
+        MainScreen()
+    }
+}
         MainScreen()
     }
 }
