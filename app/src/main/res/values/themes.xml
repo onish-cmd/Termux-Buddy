@@ -1,8 +1,8 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
 
-    <!-- Base application theme -->
+    <!-- Base application theme (light) -->
     <style name="Theme.TermuxBuddy" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- Customize your theme here -->
+        <!-- Material 3 color attributes -->
         <item name="colorPrimary">@color/md_theme_light_primary</item>
         <item name="colorOnPrimary">@color/md_theme_light_onPrimary</item>
         <item name="colorSecondary">@color/md_theme_light_secondary</item>
