@@ -4,7 +4,8 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.text.BasicText
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
@@ -40,6 +41,7 @@ fun MainScreen() {
     var checked by remember { mutableStateOf(false) }
     var switchOn by remember { mutableStateOf(true) }
     var selectedItem by remember { mutableStateOf(0) }
+    var showDialog by remember { mutableStateOf(false) }
     val items = listOf("Home", "Settings", "Profile")
     val icons = listOf(Icons.Default.Home, Icons.Default.Settings, Icons.Default.Person)
 
@@ -50,6 +52,11 @@ fun MainScreen() {
                 navigationIcon = {
                     IconButton(onClick = {}) {
                         Icon(Icons.Default.Menu, contentDescription = "Menu")
+                    }
+                },
+                actions = {
+                    IconButton(onClick = { showDialog = true }) {
+                        Icon(Icons.Default.Info, contentDescription = "Info")
                     }
                 }
             )
@@ -72,51 +79,90 @@ fun MainScreen() {
             }
         }
     ) { padding ->
-        Column(
+        LazyColumn(
             modifier = Modifier
                 .padding(padding)
                 .padding(16.dp)
                 .fillMaxSize(),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            Text("Typography Example", style = MaterialTheme.typography.headlineSmall)
-
-            Button(onClick = {}) { Text("Filled Button") }
-            OutlinedButton(onClick = {}) { Text("Outlined Button") }
-            ElevatedButton(onClick = {}) { Text("Elevated Button") }
-            TextButton(onClick = {}) { Text("Text Button") }
-
-            OutlinedTextField(
-                value = text,
-                onValueChange = { text = it },
-                label = { Text("Enter text") },
-                leadingIcon = { Icon(Icons.Default.Edit, contentDescription = null) }
-            )
-
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Checkbox(checked = checked, onCheckedChange = { checked = it })
-                Text("Checkbox")
+            item {
+                Text("Typography", style = MaterialTheme.typography.headlineSmall)
             }
 
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Switch(checked = switchOn, onCheckedChange = { switchOn = it })
-                Text("Switch")
-            }
-
-            Slider(value = sliderValue, onValueChange = { sliderValue = it })
-
-            ElevatedCard {
-                Column(Modifier.padding(16.dp)) {
-                    Text("This is a Material 3 Card")
-                    Spacer(Modifier.height(8.dp))
-                    Button(onClick = {}) { Text("Inside Card") }
+            item {
+                Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                    Button(onClick = {}) { Text("Filled") }
+                    OutlinedButton(onClick = {}) { Text("Outlined") }
+                    ElevatedButton(onClick = {}) { Text("Elevated") }
+                    TextButton(onClick = {}) { Text("Text") }
                 }
             }
 
-            AssistChip(
-                onClick = {},
-                label = { Text("Assist Chip") },
-                leadingIcon = { Icon(Icons.Default.Info, contentDescription = null) }
+            item {
+                OutlinedTextField(
+                    value = text,
+                    onValueChange = { text = it },
+                    label = { Text("Enter text") },
+                    leadingIcon = { Icon(Icons.Default.Edit, contentDescription = null) }
+                )
+            }
+
+            item {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Checkbox(checked = checked, onCheckedChange = { checked = it })
+                    Text("Checkbox")
+                }
+            }
+
+            item {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Switch(checked = switchOn, onCheckedChange = { switchOn = it })
+                    Text("Switch")
+                }
+            }
+
+            item {
+                Slider(value = sliderValue, onValueChange = { sliderValue = it })
+            }
+
+            item {
+                ElevatedCard {
+                    Column(Modifier.padding(16.dp)) {
+                        Text("This is a Material 3 Card")
+                        Spacer(Modifier.height(8.dp))
+                        Button(onClick = {}) { Text("Inside Card") }
+                    }
+                }
+            }
+
+            item {
+                AssistChip(
+                    onClick = {},
+                    label = { Text("Assist Chip") },
+                    leadingIcon = { Icon(Icons.Default.Info, contentDescription = null) }
+                )
+            }
+
+            items(listOf("List Item 1", "List Item 2", "List Item 3")) { listItem ->
+                ListItem(
+                    headlineContent = { Text(listItem) },
+                    supportingContent = { Text("Supporting text") },
+                    leadingContent = { Icon(Icons.Default.Star, contentDescription = null) },
+                    trailingContent = { Icon(Icons.Default.ArrowForward, contentDescription = null) }
+                )
+                Divider()
+            }
+        }
+
+        if (showDialog) {
+            AlertDialog(
+                onDismissRequest = { showDialog = false },
+                confirmButton = {
+                    TextButton(onClick = { showDialog = false }) { Text("OK") }
+                },
+                title = { Text("Dialog Title") },
+                text = { Text("This is a Material 3 AlertDialog.") }
             )
         }
     }
