@@ -7,8 +7,8 @@
 
     <application
         android:allowBackup="false"
-        android:label="TermuxBuddy"
-        android:theme="@style/Theme.Material3.DayNight.NoActionBar">
+        android:label="Termux Buddy"
+        android:theme="@style/Theme.TermuxBuddy"
 
         <activity
             android:name=".MainActivity"
