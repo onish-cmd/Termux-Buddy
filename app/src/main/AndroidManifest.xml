@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.onish.termuxbuddy">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
     <!-- Termux run-permission required to use RUN_COMMAND -->
     <uses-permission android:name="com.termux.permission.RUN_COMMAND" />
@@ -8,7 +7,7 @@
     <application
         android:allowBackup="false"
         android:label="Termux Buddy"
-        android:theme="@style/Theme.TermuxBuddy"
+        android:theme="@style/Theme.TermuxBuddy">
 
         <activity
             android:name=".MainActivity"
