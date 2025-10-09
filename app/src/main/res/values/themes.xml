@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- Minimal base theme so the Activity can launch; Compose handles real theming -->
-    <style name="Theme.TermuxBuddy" parent="@android:style/Theme.DeviceDefault.Light.NoActionBar">
-        <!-- No Material2/AppCompat attributes like windowActionBar/windowNoTitle -->
-    </style>
+    <!-- Minimal framework theme; Compose will provide Material 3 at runtime -->
+    <style name="Theme.TermuxBuddy" parent="@android:style/Theme.DeviceDefault.Light.NoActionBar" />
 </resources>
