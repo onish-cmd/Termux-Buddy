@@ -8,28 +8,8 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import java.io.BufferedReader
-import java.io.InputStreamReader
-
-// Run a command and stream output line by line
-suspend fun runCommandStreaming(command: String, onLine: (String) -> Unit): Int {
-    return withContext(Dispatchers.IO) {
-        val process = ProcessBuilder(
-            "/data/data/com.termux/files/usr/bin/bash", "-c", command
-        ).redirectErrorStream(true).start()
-
-        BufferedReader(InputStreamReader(process.inputStream)).use { reader ->
-            var line: String?
-            while (reader.readLine().also { line = it } != null) {
-                onLine(line!!)
-            }
-        }
-        process.waitFor()
-    }
-}
+import com.onish.termuxbuddy.exec.runCommandStreaming
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -37,7 +17,14 @@ fun ConsoleScreen(contentPadding: PaddingValues = PaddingValues(0.dp)) {
     var command by remember { mutableStateOf("") }
     val lines = remember { mutableStateListOf<String>() }
     val listState = rememberLazyListState()
-    val scope = rememberCoroutineScope()   // ✅ use this instead of raw CoroutineScope
+    val scope = rememberCoroutineScope()
+
+    // Auto-scroll to latest line on any update.
+    LaunchedEffect(lines.size) {
+        if (lines.isNotEmpty()) {
+            listState.scrollToItem(lines.lastIndex)
+        }
+    }
 
     Column(
         modifier = Modifier
@@ -45,6 +32,29 @@ fun ConsoleScreen(contentPadding: PaddingValues = PaddingValues(0.dp)) {
             .fillMaxSize()
             .padding(16.dp)
     ) {
+        // Quick actions: safe demo commands
+        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            AssistChip(
+                onClick = { runChip(scope, lines, listState, "pwd") },
+                label = { Text("pwd") }
+            )
+            AssistChip(
+                onClick = { runChip(scope, lines, listState, "ls") },
+                label = { Text("ls") }
+            )
+            AssistChip(
+                onClick = { runChip(scope, lines, listState, "uname -a") },
+                label = { Text("uname") }
+            )
+            // Termux:API examples (gracefully fail if termux-api not installed)
+            AssistChip(
+                onClick = { runChip(scope, lines, listState, "termux-battery-status") },
+                label = { Text("Battery") }
+            )
+        }
+
+        Spacer(Modifier.height(12.dp))
+
         OutlinedTextField(
             value = command,
             onValueChange = { command = it },
@@ -57,14 +67,14 @@ fun ConsoleScreen(contentPadding: PaddingValues = PaddingValues(0.dp)) {
 
         Button(
             onClick = {
-                if (command.isNotBlank()) {
-                    lines.add("> $command")
-                    scope.launch {   // ✅ launch coroutine
-                        val exit = runCommandStreaming(command) { line ->
+                val cmd = command.trim()
+                if (cmd.isNotBlank()) {
+                    lines.add("> $cmd")
+                    scope.launch {
+                        val exit = runCommandStreaming(cmd) { line ->
                             lines.add(line)
                         }
                         lines.add("[exit $exit]")
-                        listState.scrollToItem(lines.lastIndex) // ✅ inside coroutine
                     }
                     command = ""
                 }
@@ -90,5 +100,21 @@ fun ConsoleScreen(contentPadding: PaddingValues = PaddingValues(0.dp)) {
                 }
             }
         }
+    }
+}
+
+private fun runChip(
+    scope: androidx.compose.runtime.CoroutineScope,
+    lines: MutableList<String>,
+    listState: androidx.compose.foundation.lazy.LazyListState,
+    cmd: String
+) {
+    lines.add("> $cmd")
+    scope.launch {
+        val exit = runCommandStreaming(cmd) { line ->
+            lines.add(line)
+        }
+        lines.add("[exit $exit]")
+        listState.scrollToItem(lines.lastIndex)
     }
 }
