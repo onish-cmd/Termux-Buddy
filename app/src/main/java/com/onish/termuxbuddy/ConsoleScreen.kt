@@ -17,14 +17,7 @@ fun ConsoleScreen(contentPadding: PaddingValues = PaddingValues(0.dp)) {
     var command by remember { mutableStateOf("") }
     val lines = remember { mutableStateListOf<String>() }
     val listState = rememberLazyListState()
-    val scope = rememberCoroutineScope()
-
-    // Auto-scroll to latest line on any update.
-    LaunchedEffect(lines.size) {
-        if (lines.isNotEmpty()) {
-            listState.scrollToItem(lines.lastIndex)
-        }
-    }
+    val scope = rememberCoroutineScope()   // ✅ correct way
 
     Column(
         modifier = Modifier
@@ -32,29 +25,6 @@ fun ConsoleScreen(contentPadding: PaddingValues = PaddingValues(0.dp)) {
             .fillMaxSize()
             .padding(16.dp)
     ) {
-        // Quick actions: safe demo commands
-        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-            AssistChip(
-                onClick = { runChip(scope, lines, listState, "pwd") },
-                label = { Text("pwd") }
-            )
-            AssistChip(
-                onClick = { runChip(scope, lines, listState, "ls") },
-                label = { Text("ls") }
-            )
-            AssistChip(
-                onClick = { runChip(scope, lines, listState, "uname -a") },
-                label = { Text("uname") }
-            )
-            // Termux:API examples (gracefully fail if termux-api not installed)
-            AssistChip(
-                onClick = { runChip(scope, lines, listState, "termux-battery-status") },
-                label = { Text("Battery") }
-            )
-        }
-
-        Spacer(Modifier.height(12.dp))
-
         OutlinedTextField(
             value = command,
             onValueChange = { command = it },
@@ -70,11 +40,12 @@ fun ConsoleScreen(contentPadding: PaddingValues = PaddingValues(0.dp)) {
                 val cmd = command.trim()
                 if (cmd.isNotBlank()) {
                     lines.add("> $cmd")
-                    scope.launch {
+                    scope.launch {   // ✅ wrap suspend calls
                         val exit = runCommandStreaming(cmd) { line ->
                             lines.add(line)
                         }
                         lines.add("[exit $exit]")
+                        listState.scrollToItem(lines.lastIndex) // ✅ inside coroutine
                     }
                     command = ""
                 }
@@ -100,21 +71,5 @@ fun ConsoleScreen(contentPadding: PaddingValues = PaddingValues(0.dp)) {
                 }
             }
         }
-    }
-}
-
-private fun runChip(
-    scope: androidx.compose.runtime.CoroutineScope,
-    lines: MutableList<String>,
-    listState: androidx.compose.foundation.lazy.LazyListState,
-    cmd: String
-) {
-    lines.add("> $cmd")
-    scope.launch {
-        val exit = runCommandStreaming(cmd) { line ->
-            lines.add(line)
-        }
-        lines.add("[exit $exit]")
-        listState.scrollToItem(lines.lastIndex)
     }
 }
