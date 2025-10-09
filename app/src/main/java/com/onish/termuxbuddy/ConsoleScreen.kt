@@ -17,7 +17,22 @@ fun ConsoleScreen(contentPadding: PaddingValues = PaddingValues(0.dp)) {
     var command by remember { mutableStateOf("") }
     val lines = remember { mutableStateListOf<String>() }
     val listState = rememberLazyListState()
-    val scope = rememberCoroutineScope()   // ✅ correct way
+    val scope = rememberCoroutineScope()
+
+    // 🔎 Startup check: run "echo OK" once
+    LaunchedEffect(Unit) {
+        val exit = runCommandStreaming("echo OK") { /* ignore output */ }
+        if (exit != 0) {
+            lines.add("Error: Termux not found. Please install Termux + Termux:API.")
+        }
+    }
+
+    // Auto-scroll to latest line
+    LaunchedEffect(lines.size) {
+        if (lines.isNotEmpty()) {
+            listState.scrollToItem(lines.lastIndex)
+        }
+    }
 
     Column(
         modifier = Modifier
@@ -40,12 +55,12 @@ fun ConsoleScreen(contentPadding: PaddingValues = PaddingValues(0.dp)) {
                 val cmd = command.trim()
                 if (cmd.isNotBlank()) {
                     lines.add("> $cmd")
-                    scope.launch {   // ✅ wrap suspend calls
+                    scope.launch {
                         val exit = runCommandStreaming(cmd) { line ->
                             lines.add(line)
                         }
                         lines.add("[exit $exit]")
-                        listState.scrollToItem(lines.lastIndex) // ✅ inside coroutine
+                        listState.scrollToItem(lines.lastIndex)
                     }
                     command = ""
                 }
