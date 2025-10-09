@@ -1,31 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <!-- Permission required to send commands to Termux -->
+    <!-- Required for sending commands to Termux -->
     <uses-permission android:name="com.termux.permission.RUN_COMMAND" />
 
     <application
-        android:allowBackup="false"
         android:label="Termux Buddy"
-        android:theme="@style/Theme.TermuxBuddy"
+        android:icon="@mipmap/ic_launcher"
+        android:allowBackup="false"
         android:supportsRtl="true"
-        tools:targetApi="35">
+        android:theme="@style/Theme.TermuxBuddy">
 
-        <!-- Main entry point -->
         <activity
             android:name=".MainActivity"
-            android:exported="true"
-            android:theme="@style/Theme.TermuxBuddy">
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
 
-        <!-- Receiver for Termux command results -->
+        <!-- Optional: add a receiver later if you need command results -->
+        <!--
         <receiver
             android:name=".bridge.TermuxResultReceiver"
             android:exported="false" />
+        -->
     </application>
 </manifest>
