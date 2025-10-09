@@ -1,0 +1,4 @@
+<resources>
+    <!-- Minimal theme just to satisfy the manifest -->
+    <style name="Theme.TermuxBuddy" parent="android:Theme.Material.Light.NoActionBar" />
+</resources>
