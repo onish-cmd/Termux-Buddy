@@ -2,9 +2,11 @@ plugins {
     id "com.android.application"
     id "org.jetbrains.kotlin.android"
 }
+
 android {
     namespace "com.onish.termuxbuddy"
     compileSdk 34
+
     defaultConfig {
         applicationId "com.onish.termuxbuddy"
         minSdk 24
@@ -12,10 +14,26 @@ android {
         versionCode 1
         versionName "1.0"
     }
-    buildFeatures { compose true }
-    composeOptions { kotlinCompilerExtensionVersion "1.5.3" }
-    kotlinOptions { jvmTarget = "17" }
+
+    buildFeatures {
+        compose true
+    }
+
+    composeOptions {
+        kotlinCompilerExtensionVersion "1.5.3"
+    }
+
+    //  Align Java and Kotlin to 17
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+
+    kotlinOptions {
+        jvmTarget = "17"
+    }
 }
+
 dependencies {
     implementation "androidx.core:core-ktx:1.13.1"
     implementation "androidx.activity:activity-compose:1.9.2"
