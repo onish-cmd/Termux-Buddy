@@ -20,7 +20,6 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             TermuxBuddyTheme {
-                // Optional: IME + safe insets union for better keyboard behavior
                 Scaffold(
                     contentWindowInsets = WindowInsets.safeContent.union(WindowInsets.ime),
                     topBar = { TopAppBar(title = { Text("TermuxBuddy Console") }) }
