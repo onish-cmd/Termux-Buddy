@@ -170,6 +170,3 @@ fun PreviewMainScreen() {
         MainScreen()
     }
 }
-        MainScreen()
-    }
-}
