@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <!-- Required for sending commands to Termux -->
     <uses-permission android:name="com.termux.permission.RUN_COMMAND" />
 
     <application
@@ -20,11 +19,9 @@
             </intent-filter>
         </activity>
 
-        <!-- Optional: add a receiver later if you need command results -->
-        <!--
+        <!-- Receiver to capture Termux command results -->
         <receiver
             android:name=".bridge.TermuxResultReceiver"
             android:exported="false" />
-        -->
     </application>
 </manifest>
