@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- Minimal framework theme; Compose will provide Material 3 at runtime -->
+    <!-- Minimal base theme; Compose handles Material 3 -->
     <style name="Theme.TermuxBuddy" parent="@android:style/Theme.DeviceDefault.Light.NoActionBar" />
 </resources>
